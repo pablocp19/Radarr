@@ -163,8 +163,8 @@ namespace NzbDrone.Core.MediaFiles.MovieImport
                         }
 
                     }
-
-                    decision = new ImportDecision(localMovie, new Rejection("Unable to parse file"));
+                    decision = GetDecision(localMovie, downloadClientItem); //Deleted error: "Unable to parse file"
+                    //decision = new ImportDecision(localMovie, new Rejection("Unable to parse file"));
                 }
             }
             catch (Exception e)
