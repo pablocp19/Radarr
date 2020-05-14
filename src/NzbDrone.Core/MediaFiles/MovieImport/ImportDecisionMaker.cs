@@ -186,7 +186,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport
                 _logger.Error(e, "Couldn't import file. {0}", file);
 
                 var localMovie = new LocalMovie { Path = file };
-                decision = new ImportDecision(localMovie, new Rejection("Unexpected error processing file"));
+                //decision = new ImportDecision(localMovie, new Rejection("Unexpected error processing file"));
             }
 
             //LocalMovie nullMovie = null;
