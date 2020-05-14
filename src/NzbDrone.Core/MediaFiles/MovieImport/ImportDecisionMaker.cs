@@ -163,7 +163,21 @@ namespace NzbDrone.Core.MediaFiles.MovieImport
                         }
 
                     }
-                    decision = GetDecision(localMovie, downloadClientItem); //Deleted error: "Unable to parse file"
+                    //decision = new ImportDecision(localMovie, new Rejection("Unable to parse file"));
+                    //TODO: make it so media info doesn't ruin the import process of a new movie
+                    var mediaInfo = (_config.EnableMediaInfo || !movie.Path?.IsParentPath(file) == true) ? _videoFileInfoReader.GetMediaInfo(file) : null;
+                    var size = _diskProvider.GetFileSize(file);
+                    var historyItems = _historyService.FindByDownloadId(downloadClientItem?.DownloadId ?? "");
+                    var firstHistoryItem = historyItems?.OrderByDescending(h => h.Date)?.FirstOrDefault();
+                    var sizeMovie = new LocalMovie();
+                    sizeMovie.Size = size;
+                    localMovie = _parsingService.GetLocalMovie(file, minimalInfo, movie, new List<object>{mediaInfo, firstHistoryItem, sizeMovie, folderInfo}, sceneSource);
+                    localMovie.Quality = GetQuality(folderInfo, localMovie.Quality, movie);
+                    localMovie.Size = size;
+
+                    _logger.Debug("Size: {0}", localMovie.Size);
+
+                    decision = GetDecision(localMovie, downloadClientItem);
                     //decision = new ImportDecision(localMovie, new Rejection("Unable to parse file"));
                 }
             }
